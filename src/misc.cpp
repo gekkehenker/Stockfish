@@ -55,6 +55,8 @@ typedef bool(*fun3_t)(HANDLE, CONST GROUP_AFFINITY*, PGROUP_AFFINITY);
 
 using namespace std;
 
+namespace Stockfish {
+
 namespace {
 
 /// Version number. If Version is left empty, then compile date in the format
@@ -521,3 +523,4 @@ void bindThisThread(size_t idx) {
 #endif
 
 } // namespace WinProcGroup
+} // namespace Stockfish

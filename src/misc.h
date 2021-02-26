@@ -27,6 +27,8 @@
 
 #include "types.h"
 
+namespace Stockfish {
+
 std::string engine_info(bool to_uci = false);
 std::string compiler_info();
 void prefetch(void* addr);
@@ -131,5 +133,7 @@ inline uint64_t mul_hi64(uint64_t a, uint64_t b) {
 namespace WinProcGroup {
   void bindThisThread(size_t idx);
 }
+
+} // namespace Stockfish
 
 #endif // #ifndef MISC_H_INCLUDED

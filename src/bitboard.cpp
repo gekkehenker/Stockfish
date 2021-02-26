@@ -22,6 +22,8 @@
 #include "bitboard.h"
 #include "misc.h"
 
+namespace Stockfish {
+
 uint8_t PopCnt16[1 << 16];
 uint8_t SquareDistance[SQUARE_NB][SQUARE_NB];
 
@@ -39,8 +41,8 @@ namespace {
   Bitboard BishopTable[0x1480]; // To store bishop attacks
 
   void init_magics(PieceType pt, Bitboard table[], Magic magics[]);
-}
 
+}
 
 /// Bitboards::pretty() returns an ASCII representation of a bitboard suitable
 /// to be printed to standard output. Useful for debugging.
@@ -100,7 +102,6 @@ void Bitboards::init() {
                   LineBB[s1][s2] = (attacks_bb(pt, s1, 0) & attacks_bb(pt, s2, 0)) | s1 | s2;
   }
 }
-
 
 namespace {
 
@@ -201,3 +202,5 @@ namespace {
     }
   }
 }
+
+} // namespace Stockfish

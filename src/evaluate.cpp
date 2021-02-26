@@ -26,6 +26,7 @@
 #include "evaluate.h"
 #include "thread.h"
 
+namespace Stockfish {
 namespace {
 
   // Evaluation class computes and stores attacks tables and other working data
@@ -89,3 +90,5 @@ std::string Eval::trace(const Position& pos) {
 
   return ss.str();
 }
+
+} // namespace Stockfish

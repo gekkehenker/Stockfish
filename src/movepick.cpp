@@ -20,6 +20,8 @@
 
 #include "movepick.h"
 
+namespace Stockfish {
+
 namespace {
 
   enum Stages {
@@ -262,3 +264,5 @@ top:
   assert(false);
   return MOVE_NONE; // Silence warning
 }
+
+} // namespace Stockfish

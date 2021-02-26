@@ -23,6 +23,8 @@
 
 #include "types.h"
 
+namespace Stockfish {
+
 class Position;
 
 namespace Eval {
@@ -31,5 +33,7 @@ std::string trace(const Position& pos);
 
 Value evaluate(const Position& pos);
 }
+
+} // namespace Stockfish
 
 #endif // #ifndef EVALUATE_H_INCLUDED

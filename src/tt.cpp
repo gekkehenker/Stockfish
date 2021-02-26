@@ -26,6 +26,8 @@
 #include "tt.h"
 #include "uci.h"
 
+namespace Stockfish {
+
 TranspositionTable TT; // Our global transposition table
 
 /// TTEntry::save() populates the TTEntry with a new node's data, possibly
@@ -155,3 +157,5 @@ int TranspositionTable::hashfull() const {
 
   return cnt / ClusterSize;
 }
+
+} // namespace Stockfish
