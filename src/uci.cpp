@@ -263,7 +263,7 @@ void UCI::loop(int argc, char* argv[]) {
       else if (token == "d")        sync_cout << pos << sync_endl;
       else if (token == "eval")     sync_cout << Eval::trace(pos) << sync_endl;
       else if (token == "compiler") sync_cout << compiler_info() << sync_endl;
-      else
+      else if (!token.empty() && token[0] != '#')
           sync_cout << "Unknown command: " << cmd << sync_endl;
 
   } while (token != "quit" && argc == 1); // Command line args are one-shot
