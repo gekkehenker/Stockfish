@@ -155,7 +155,6 @@ public:
   bool has_game_cycle(int ply) const;
   bool has_repeated() const;
   int rule50_count() const;
-  Score psq_score() const;
   Value non_pawn_material(Color c) const;
   Value non_pawn_material() const;
 
@@ -188,15 +187,10 @@ private:
   Bitboard castlingPath[CASTLING_RIGHT_NB];
   int gamePly;
   Color sideToMove;
-  Score psq;
   Thread* thisThread;
   StateInfo* st;
   bool chess960;
 };
-
-namespace PSQT {
-  extern Score psq[PIECE_NB][SQUARE_NB];
-}
 
 extern std::ostream& operator<<(std::ostream& os, const Position& pos);
 
@@ -327,10 +321,6 @@ inline Key Position::material_key() const {
   return st->materialKey;
 }
 
-inline Score Position::psq_score() const {
-  return psq;
-}
-
 inline Value Position::non_pawn_material(Color c) const {
   return st->nonPawnMaterial[c];
 }
@@ -384,7 +374,6 @@ inline void Position::put_piece(Piece pc, Square s) {
   index[s] = pieceCount[pc]++;
   pieceList[pc][index[s]] = s;
   pieceCount[make_piece(color_of(pc), ALL_PIECES)]++;
-  psq += PSQT::psq[pc][s];
 }
 
 inline void Position::remove_piece(Square s) {
@@ -403,7 +392,6 @@ inline void Position::remove_piece(Square s) {
   pieceList[pc][index[lastSquare]] = lastSquare;
   pieceList[pc][pieceCount[pc]] = SQ_NONE;
   pieceCount[make_piece(color_of(pc), ALL_PIECES)]--;
-  psq -= PSQT::psq[pc][s];
 }
 
 inline void Position::move_piece(Square from, Square to) {
@@ -419,7 +407,6 @@ inline void Position::move_piece(Square from, Square to) {
   board[to] = pc;
   index[to] = index[from];
   pieceList[pc][index[to]] = to;
-  psq += PSQT::psq[pc][to] - PSQT::psq[pc][from];
 }
 
 inline void Position::do_move(Move m, StateInfo& newSt) {
