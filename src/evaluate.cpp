@@ -26,7 +26,6 @@
 
 #include "bitboard.h"
 #include "evaluate.h"
-#include "material.h"
 #include "pawns.h"
 #include "thread.h"
 
