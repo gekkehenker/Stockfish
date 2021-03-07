@@ -26,7 +26,6 @@
 
 #include "bitboard.h"
 #include "evaluate.h"
-#include "pawns.h"
 #include "thread.h"
 
 namespace {
