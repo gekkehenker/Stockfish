@@ -56,7 +56,7 @@ namespace {
             + (pos.count<QUEEN>(WHITE) - pos.count<QUEEN>(BLACK)) * 9;
 
     vv *= PawnValueEg;
-    vv += Value(2 * (pos.this_thread()->nodes & 3) - 3);
+    vv += Value(2 * (pos.this_thread()->nodes & 14) - 14);
 
     return  Value(pos.side_to_move() == WHITE ? vv : -vv);
   }
