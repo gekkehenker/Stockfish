@@ -73,7 +73,7 @@ std::ostream& operator<<(std::ostream& os, const Position& pos) {
      << std::setfill(' ') << std::dec << "\nCheckers: ";
 
   for (Bitboard b = pos.checkers(); b; )
-      os << UCI::square(pop_lsb(&b)) << " ";
+      os << UCI::square(pop_lsb(b)) << " ";
 
   if (    int(Tablebases::MaxCardinality) >= popcount(pos.pieces())
       && !pos.can_castle(ANY_CASTLING))
@@ -359,7 +359,7 @@ void Position::set_state(StateInfo* si) const {
 
   for (Bitboard b = pieces(); b; )
   {
-      Square s = pop_lsb(&b);
+      Square s = pop_lsb(b);
       Piece pc = piece_on(s);
       si->key ^= Zobrist::psq[pc][s];
 
@@ -476,7 +476,7 @@ Bitboard Position::slider_blockers(Bitboard sliders, Square s, Bitboard& pinners
 
   while (snipers)
   {
-    Square sniperSq = pop_lsb(&snipers);
+    Square sniperSq = pop_lsb(snipers);
     Bitboard b = between_bb(s, sniperSq) & occupancy;
 
     if (b && !more_than_one(b))
@@ -544,7 +544,7 @@ bool Position::legal(Move m) const {
   // If the moving piece is a king, check whether the destination square is
   // attacked by the opponent.
   if (type_of(piece_on(from)) == KING)
-      return !(attackers_to(to) & pieces(~us));
+      return !(attackers_to(to, pieces() ^ from) & pieces(~us));
 
   // A non-king move is legal if and only if it is not pinned or it
   // is moving along the ray towards or away from the king.
