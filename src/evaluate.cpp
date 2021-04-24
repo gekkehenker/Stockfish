@@ -49,7 +49,7 @@ namespace {
   Value Evaluation::value() {
     assert(!pos.checkers());
 
-    int vv =  0
+    int vv =  0;
     
     vv += Value(2 * (pos.this_thread()->nodes & 14) - 14);
 
