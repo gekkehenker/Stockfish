@@ -50,10 +50,10 @@ namespace {
     assert(!pos.checkers());
 
     double vv =  pos.count<PAWN>(WHITE) - pos.count<PAWN>(BLACK) * 1
-            + (pos.count<BISHOP>(WHITE) - pos.count<BISHOP>(BLACK)) * 3
-            + (pos.count<KNIGHT>(WHITE) - pos.count<KNIGHT>(BLACK)) * 2.9
-            + (pos.count<ROOK>(WHITE) - pos.count<ROOK>(BLACK)) * 5
-            + (pos.count<QUEEN>(WHITE) - pos.count<QUEEN>(BLACK)) * 9;
+            + (pos.count<BISHOP>(WHITE) - pos.count<BISHOP>(BLACK)) * 3.33
+            + (pos.count<KNIGHT>(WHITE) - pos.count<KNIGHT>(BLACK)) * 3.05
+            + (pos.count<ROOK>(WHITE) - pos.count<ROOK>(BLACK)) * 5.63
+            + (pos.count<QUEEN>(WHITE) - pos.count<QUEEN>(BLACK)) * 9.5;
 
     vv *= PawnValueEg;
     vv += Value(2 * (pos.this_thread()->nodes & 14) - 14);
