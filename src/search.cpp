@@ -1163,6 +1163,16 @@ moves_loop: // When in check, search starts from here
       else if (   PieceValue[EG][pos.captured_piece()] > PawnValueEg
                && pos.non_pawn_material() <= 2 * RookValueMg)
           extension = 1;
+          
+      // Castling extension
+      if (type_of(move) == CASTLING)
+          extension = 1;
+	  
+      // Late irreversible move extension
+      if (   move == ttMove
+          && pos.rule50_count() > 80
+          && (captureOrPromotion || type_of(movedPiece) == PAWN))
+          extension = 2;      
 
       // Add extension to new depth
       newDepth += extension;
