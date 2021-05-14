@@ -47,9 +47,7 @@
 // Note that this does not work in Microsoft Visual Studio.
 #if !defined(_MSC_VER) && !defined(NNUE_EMBEDDING_OFF)
   INCBIN(EmbeddedNNUE, EvalFileDefaultName);
-  constexpr bool             gHasEmbeddedNet = true;
 #else
-  constexpr bool             gHasEmbeddedNet = false;
   const unsigned char        gEmbeddedNNUEData[1] = {0x0};
   const unsigned char *const gEmbeddedNNUEEnd = &gEmbeddedNNUEData[1];
   const unsigned int         gEmbeddedNNUESize = 1;
@@ -116,12 +114,23 @@ namespace Eval {
         }
   }
 
-  void NNUE::export_net() {
-    if constexpr (gHasEmbeddedNet) {
-      ofstream stream(EvalFileDefaultName, std::ios_base::binary);
-      stream.write(reinterpret_cast<const char*>(gEmbeddedNNUEData), gEmbeddedNNUESize);
+  void NNUE::export_net(const std::optional<std::string>& filename) {
+    std::string actualFilename;
+    if (filename.has_value()) {
+      actualFilename = filename.value();
     } else {
-      sync_cout << "No embedded network file." << sync_endl;
+      if (eval_file_loaded != EvalFileDefaultName) {
+        sync_cout << "Failed to export a net. A non-embedded net can only be saved if the filename is specified." << sync_endl;
+        return;
+      }
+      actualFilename = EvalFileDefaultName;
+    }
+
+    ofstream stream(actualFilename, std::ios_base::binary);
+    if (save_eval(stream)) {
+        sync_cout << "Network saved successfully to " << actualFilename << "." << sync_endl;
+    } else {
+        sync_cout << "Failed to export a net." << sync_endl;
     }
   }
 
@@ -1103,10 +1112,9 @@ Value Eval::evaluate(const Position& pos) {
       // Scale and shift NNUE for compatibility with search and classical evaluation
       auto  adjusted_NNUE = [&]()
       {
-         int material = pos.non_pawn_material() + 4 * PawnValueMg * pos.count<PAWN>();
-         int scale =  580
-                    + material / 32
-                    - 4 * pos.rule50_count();
+         int param1 = 903, param2 = 28, param3 = 28;
+
+         int scale = param1 + param2 * pos.count<PAWN>() + param3 * pos.non_pawn_material() / 1024;
 
          Value nnue = NNUE::evaluate(pos) * scale / 1024 + Time.tempoNNUE;
 
@@ -1121,14 +1129,14 @@ Value Eval::evaluate(const Position& pos) {
       Value psq = Value(abs(eg_value(pos.psq_score())));
       int   r50 = 16 + pos.rule50_count();
       bool  largePsq = psq * 16 > (NNUEThreshold1 + pos.non_pawn_material() / 64) * r50;
-      bool  classical = largePsq || (psq > PawnValueMg / 4 && !(pos.this_thread()->nodes & 0xB));
+      bool  classical = largePsq;
 
       // Use classical evaluation for really low piece endgames.
       // One critical case is the draw for bishop + A/H file pawn vs naked king.
       bool lowPieceEndgame =   pos.non_pawn_material() == BishopValueMg
                             || (pos.non_pawn_material() < 2 * RookValueMg && pos.count<PAWN>() < 2);
 
-      v = classical || lowPieceEndgame ? Evaluation<NO_TRACE>(pos).value() 
+      v = classical || lowPieceEndgame ? Evaluation<NO_TRACE>(pos).value()
                                        : adjusted_NNUE();
 
       // If the classical eval is small and imbalance large, use NNUE nevertheless.
@@ -1138,8 +1146,7 @@ Value Eval::evaluate(const Position& pos) {
           && !lowPieceEndgame
           && (   abs(v) * 16 < NNUEThreshold2 * r50
               || (   pos.opposite_bishops()
-                  && abs(v) * 16 < (NNUEThreshold1 + pos.non_pawn_material() / 64) * r50
-                  && !(pos.this_thread()->nodes & 0xB))))
+                  && abs(v) * 16 < (NNUEThreshold1 + pos.non_pawn_material() / 64) * r50)))
           v = adjusted_NNUE();
   }
 
