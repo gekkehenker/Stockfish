@@ -55,6 +55,7 @@ namespace {
             + (pos.count<ROOK>(WHITE) - pos.count<ROOK>(BLACK)) * 470
             + (pos.count<QUEEN>(WHITE) - pos.count<QUEEN>(BLACK)) * 921;
 
+    vv /= 100
     vv *= PawnValueEg;
     vv += Value(2 * (pos.this_thread()->nodes & 14) - 14);
 
