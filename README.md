@@ -13,8 +13,7 @@ about how to use Stockfish with it.
 The Stockfish engine features two evaluation functions for chess, the classical
 evaluation based on handcrafted terms, and the NNUE evaluation based on efficiently
 updatable neural networks. The classical evaluation runs efficiently on almost all
-CPU architectures, while the NNUE evaluation benefits from the vector
-intrinsics available on most CPUs (sse2, avx2, neon, or similar).
+CPU architectures.
 
 
 ## Files
@@ -120,14 +119,6 @@ change them via a chess GUI. This is a list of available UCI options in Stockfis
     Limit Syzygy tablebase probing to positions with at most this many pieces left
     (including kings and pawns).
 
-  * #### Contempt
-    A positive value for contempt favors middle game positions and avoids draws,
-    effective for the classical evaluation only.
-
-  * #### Analysis Contempt
-    By default, contempt is set to prefer the side to move. Set this option to "White"
-    or "Black" to analyse with contempt for that side, or "Off" to disable contempt.
-
   * #### Move Overhead
     Assume a time delay of x ms due to network and GUI overheads. This is useful to
     avoid losses on time in those cases.
@@ -184,10 +175,7 @@ The NNUE evaluation was first introduced in shogi, and ported to Stockfish after
 It can be evaluated efficiently on CPUs, and exploits the fact that only parts
 of the neural network need to be updated after a typical chess move.
 [The nodchip repository](https://github.com/nodchip/Stockfish) provides additional
-tools to train and develop the NNUE networks. On CPUs supporting modern vector instructions
-(avx2 and similar), the NNUE evaluation results in much stronger playing strength, even
-if the nodes per second computed by the engine is somewhat lower (roughly 80% of nps
-is typical).
+tools to train and develop the NNUE networks.
 
 Notes:
 
@@ -231,35 +219,10 @@ more compact than Nalimov tablebases, while still storing all information
 needed for optimal play and in addition being able to take into account
 the 50-move rule.
 
-## Large Pages
-
-Stockfish supports large pages on Linux and Windows. Large pages make
-the hash access more efficient, improving the engine speed, especially
-on large hash sizes. Typical increases are 5..10% in terms of nodes per
-second, but speed increases up to 30% have been measured. The support is
-automatic. Stockfish attempts to use large pages when available and
-will fall back to regular memory allocation when this is not the case.
-
-### Support on Linux
-
-Large page support on Linux is obtained by the Linux kernel
-transparent huge pages functionality. Typically, transparent huge pages
-are already enabled, and no configuration is needed.
-
-### Support on Windows
-
-The use of large pages requires "Lock Pages in Memory" privilege. See
-[Enable the Lock Pages in Memory Option (Windows)](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/enable-the-lock-pages-in-memory-option-windows)
-on how to enable this privilege, then run [RAMMap](https://docs.microsoft.com/en-us/sysinternals/downloads/rammap)
-to double-check that large pages are used. We suggest that you reboot
-your computer after you have enabled large pages, because long Windows
-sessions suffer from memory fragmentation, which may prevent Stockfish
-from getting large pages: a fresh session is better in this regard.
-
 ## Compiling Stockfish yourself from the sources
 
-Stockfish has support for 32 or 64-bit CPUs, certain hardware
-instructions, big-endian machines such as Power PC, and other platforms.
+Stockfish has support for 32 or 64-bit CPUs, big-endian machines such as Power PC,
+and other platforms.
 
 On Unix-like systems, it should be easy to compile Stockfish
 directly from the source code with the included Makefile in the folder
@@ -270,7 +233,7 @@ targets with corresponding descriptions.
     cd src
     make help
     make net
-    make build ARCH=x86-64-modern
+    make build ARCH=x86-64
 ```
 
 When not using the Makefile to compile (for instance, with Microsoft MSVC) you
